@@ -1,0 +1,13 @@
+{
+  "name":"hubbardlabs/foreign-keys-pro",
+  "type":"wordpress",
+    "require-dev": {
+        "stevegrunwell/wp-enforcer": "^0.5.0"
+    },
+    "post-install-cmd": [
+      "wp-enforcer"
+    ],
+    "post-update-cmd": [
+      "wp-enforcer"
+    ]
+}
