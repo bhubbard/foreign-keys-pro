@@ -59,7 +59,11 @@ if( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
-			$query = "ALTER TABLE $wpbd->usermeta ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
+			$constraint = esc_sql( $args['constraint'] ) ?? '`user_id`';
+			$on_delete = esc_sql( $args['on_delete'] ) ?? 'CASCADE';
+			$on_update = esc_sql( $args['on_update'] ) ?? 'CASCADE';
+
+			$query = "ALTER TABLE $wpbd->usermeta ADD CONSTRAINT $constraint FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE $on_delete ON UPDATE $on_update";
 		  $results = $wpdb->query( $query ) ?? false;
 
 			return $results;
