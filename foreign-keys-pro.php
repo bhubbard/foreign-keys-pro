@@ -40,6 +40,10 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 */
 		public function create_foreign_keys() {
 
+			if( 'true' === $this->check_for_myisam() ) {
+				return 'Please update your database to InnoDB.';
+			}
+
 				$results                       = array();
 				$results['usermeta']           = $this->foreign_key_usermeta();
 				$results['postmeta']           = $this->foreign_key_postmeta();
