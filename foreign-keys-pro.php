@@ -30,7 +30,24 @@ if( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [__construct description]
 		 */
 		public function __construct() {
+				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
+		}
 
+		public function create_foreign_keys() {
+
+				$results = array();
+				$results['usermeta'] = $this->foreign_key_usermeta();
+				$results['postmeta'] = $this->foreign_key_postmeta();
+				$results['commentmeta'] = $this->foreign_key_commentmeta();
+				$results['termmeta'] = $this->foregin_key_termmeta();
+				$results['term_relationships'] = $this->foregin_key_term_relationships();
+				$results['term_taxonomy'] = $this->foregin_key_term_taxonomy();
+				$results['posts'] = $this->foregin_key_posts();
+				$results['comments'] = $this->foreign_keys_comments();
+
+				var_dump( $results );
+
+				return $results;
 		}
 
 		/**
@@ -50,6 +67,8 @@ if( ! class_exists( 'ForeignKeysPro' ) ) {
 
 		}
 
+		// TODO: Check MySQL Version.
+
 		/**
 		 * [foreign_key_usermeta description]
 		 * @param  array  $args [description]
@@ -59,11 +78,8 @@ if( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
-			$constraint = esc_sql( $args['constraint'] ) ?? '`user_id`';
-			$on_delete = esc_sql( $args['on_delete'] ) ?? 'CASCADE';
-			$on_update = esc_sql( $args['on_update'] ) ?? 'CASCADE';
 
-			$query = "ALTER TABLE $wpbd->usermeta ADD CONSTRAINT $constraint FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE $on_delete ON UPDATE $on_update";
+			$query = "ALTER TABLE $wpdb->usermeta ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE 'CASCADE' ON UPDATE 'CASCADE'";
 		  $results = $wpdb->query( $query ) ?? false;
 
 			return $results;
@@ -146,5 +162,9 @@ if( ! class_exists( 'ForeignKeysPro' ) ) {
 				return $results;
 
 		}
+
+}
+
+new ForeignKeysPro();
 
 }
