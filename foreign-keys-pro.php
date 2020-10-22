@@ -36,7 +36,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		/**
 		 * [create_foreign_keys description]
 		 *
-		 * @return [type] [description]
+		 * @return $results Results of Query.
 		 */
 		public function create_foreign_keys() {
 
@@ -58,7 +58,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		/**
 		 * [check_for_myisam description]
 		 *
-		 * @return [type] [description]
+		 * @return $results Results of Query.
 		 */
 		public function check_for_myisam() {
 
@@ -79,7 +79,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foreign_key_usermeta description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foreign_key_usermeta( $args = array() ) {
 
@@ -96,7 +96,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foreign_key_postmeta description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foreign_key_postmeta( $args = array() ) {
 
@@ -113,7 +113,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foreign_key_commentmeta description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foreign_key_commentmeta( $args = array() ) {
 
@@ -130,7 +130,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foregin_key_termmeta description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foregin_key_termmeta( $args = array() ) {
 
@@ -147,7 +147,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foregin_key_term_relationships description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foregin_key_term_relationships( $args = array() ) {
 
@@ -164,7 +164,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foregin_key_term_taxonomy description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foregin_key_term_taxonomy( $args = array() ) {
 
@@ -181,7 +181,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foregin_key_posts description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foregin_key_posts( $args = array() ) {
 
@@ -198,7 +198,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [foreign_keys_comments description]
 		 *
 		 * @param  array $args Arguments.
-		 * @return [type]       [description]
+		 * @return $results Results of Query.
 		 */
 		public function foreign_keys_comments( $args = array() ) {
 
