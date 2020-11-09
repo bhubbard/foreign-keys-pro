@@ -7,11 +7,11 @@
 
 /*
  * Plugin Name: Foreign Keys Pro
- * Plugin URI: https://hubbardlabs.com
+ * Plugin URI: https://github.com/bhubbard/foreign-keys-pro
  * Description: A plugin to setup Foreign Keys in the WordPress Database.
  * Text Domain: foreign-keys-pro
  * Author: Hubbard Labs
- * Author URI: https://hubbardlabs.com
+ * Author URI: https://brandonhubbard.com
  * Contributors: bhubbard
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
