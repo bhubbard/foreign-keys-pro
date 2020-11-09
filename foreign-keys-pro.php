@@ -30,8 +30,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [__construct description]
 		 */
 		public function __construct() {
-				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
-			//	register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
+			register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
 		}
 
 
