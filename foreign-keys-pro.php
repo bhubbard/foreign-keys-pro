@@ -31,7 +31,10 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 */
 		public function __construct() {
 				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
+				// register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
 		}
+
+
 
 		/**
 		 * [create_foreign_keys description]
@@ -40,8 +43,8 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 */
 		public function create_foreign_keys() {
 
-			if( 'true' === $this->check_for_myisam() ) {
-				return 'Please update your database to InnoDB.';
+			if( true === $this->check_for_myisam() ) {
+				return new WP_Error( 'db-myisam', __( 'Please update your database to InnoDB.', 'foreign-keys-pro' ) );
 			}
 
 				$results                       = array();
@@ -67,6 +70,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		public function check_for_myisam() {
 
 			global $wpdb;
+			$wpdb->show_errors();
 			$myisam_tables = intval( $wpdb->query( "SHOW TABLE STATUS WHERE Engine = 'MyISAM'" ) );
 
 			if ( 0 === $myisam_tables ) {
@@ -74,6 +78,24 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 			} else {
 				return true;
 			}
+
+		}
+
+		/**
+		 * Check for Current Constraints.
+		 * @return array Array of current constraint names.
+		 */
+		public function get_current_constraints() {
+
+			global $wpdb;
+
+			$current_constraints = $wpdb->get_results("SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE information_schema.TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'FOREIGN KEY' ");
+			$constraint_names = array();
+
+			foreach( $current_constraints as $constraint ) {
+				$constraint_names[] = $constraint->CONSTRAINT_NAME;
+			}
+			return $constraint_names ?? array();
 
 		}
 
@@ -89,12 +111,21 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'user_id', $current_constraints ) ) {
+				return __( 'User ID constraint already exists.', 'foreign-keys-pro' );
+			}
+
 			$query   = "ALTER TABLE $wpdb->usermeta ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE 'CASCADE' ON UPDATE 'CASCADE'";
 			$results = $wpdb->query( $query ) ?? false;
+
+			write_log ( $results );
 
 			return $results;
 
 		}
+
 
 		/**
 		 * [foreign_key_postmeta description]
@@ -105,6 +136,12 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		public function foreign_key_postmeta( $args = array() ) {
 
 			global $wpdb;
+
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'post_id', $current_constraints ) ) {
+				return __( 'Post ID constraint already exists.', 'foreign-keys-pro' );
+			}
 
 			$query   = "ALTER TABLE $wpdb->postmeta ADD CONSTRAINT `post_id` FOREIGN KEY (`post_id`) REFERENCES $wpdb->posts (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
@@ -123,6 +160,12 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'comment_id', $current_constraints ) ) {
+				return __( 'Comment ID constraint already exists.', 'foreign-keys-pro' );
+			}
+
 			$query   = "ALTER TABLE $wpdb->commentmeta ADD CONSTRAINT `comment_id` FOREIGN KEY (`comment_id`) REFERENCES $wpdb->comments (`comment_ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
 
@@ -139,6 +182,12 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		public function foregin_key_termmeta( $args = array() ) {
 
 			global $wpdb;
+
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'term_id', $current_constraints ) ) {
+				return __( 'Term ID constraint already exists.', 'foreign-keys-pro' );
+			}
 
 			$query   = "ALTER TABLE $wpdb->termmeta ADD CONSTRAINT `term_id` FOREIGN KEY (`term_id`) REFERENCES $wpdb->terms (`term_id`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
@@ -157,6 +206,12 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'term_taxonomy_id', $current_constraints ) ) {
+				return __( 'Term Taxonomy ID constraint already exists.', 'foreign-keys-pro' );
+			}
+
 			$query   = "ALTER TABLE $wpdb->term_relationships ADD CONSTRAINT `term_taxonomy_id` FOREIGN KEY (`term_taxonomy_id`) REFERENCES $wpdb->term_taxonomy (`term_taxonomy_id`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
 
@@ -173,6 +228,12 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		public function foregin_key_term_taxonomy( $args = array() ) {
 
 			global $wpdb;
+
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'term_id', $current_constraints ) ) {
+				return __( 'Term ID constraint already exists.', 'foreign-keys-pro' );
+			}
 
 			$query   = "ALTER TABLE $wpdb->term_taxonomy ADD CONSTRAINT `term_id` FOREIGN KEY (`term_id`) REFERENCES $wpdb->terms (`term_id`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
@@ -191,6 +252,13 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 			global $wpdb;
 
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'author_id', $current_constraints ) ) {
+				return __( 'Author ID constraint already exists.', 'foreign-keys-pro' );
+			}
+
+
 			$query   = "ALTER TABLE $wpdb->posts ADD CONSTRAINT `author_id` FOREIGN KEY (`post_author`) REFERENCES $wpdb->users (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
 
@@ -208,7 +276,13 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 				global $wpdb;
 
-				$query   = "ALTER TABLE $wpdb->comments ADD CONSTRAINT `commet_post_id` FOREIGN KEY (`comment_post_ID`) REFERENCES $wpdb->posts (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
+				$current_constraints = $this->get_current_constraints();
+
+				if( in_array( 'comment_post_id', $current_constraints ) ) {
+					return __( 'Comment Post ID constraint already exists.', 'foreign-keys-pro' );
+				}
+
+				$query   = "ALTER TABLE $wpdb->comments ADD CONSTRAINT `comment_post_id` FOREIGN KEY (`comment_post_ID`) REFERENCES $wpdb->posts (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 				$results = $wpdb->query( $query ) ?? false;
 
 				return $results;
@@ -219,4 +293,16 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 	new ForeignKeysPro();
 
+}
+
+
+
+if ( ! function_exists('write_log')) {
+   function write_log ( $log )  {
+      if ( is_array( $log ) || is_object( $log ) ) {
+         error_log( print_r( $log, true ) );
+      } else {
+         error_log( $log );
+      }
+   }
 }
