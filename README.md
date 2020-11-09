@@ -6,6 +6,7 @@ A WordPress plugin to add foreign keys.
 
 ## Features
 
+Simply adds MySQL Foreign Keys to default tables in WordPress.
 
 ## Frequently Asked Questions
 
