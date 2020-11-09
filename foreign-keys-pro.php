@@ -31,6 +31,9 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 */
 		public function __construct() {
 				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
+					add_action( 'wp_head', array( $this, 'get_mysql_version' ) );
+
+
 				// register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
 		}
 
@@ -100,6 +103,15 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		}
 
 		// TODO: Check MySQL Version.
+		public function get_mysql_version() {
+
+			global $wpdb;
+
+			$version = $wpdb->get_results( "SELECT VERSION() as version" ) ?? false;
+
+			return $version[0]->version;
+
+		}
 
 		/**
 		 * [foreign_key_usermeta description]
