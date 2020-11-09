@@ -30,7 +30,8 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [__construct description]
 		 */
 		public function __construct() {
-				register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
+				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
+			//	register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
 		}
 
 
@@ -49,14 +50,16 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 				$results                       = array();
 				$results['usermeta']           = $this->foreign_key_usermeta();
 				$results['postmeta']           = $this->foreign_key_postmeta();
-				$results['commentmeta']        = $this->foreign_key_commentmeta();
 				$results['termmeta']           = $this->foregin_key_termmeta();
 				$results['term_relationships'] = $this->foregin_key_term_relationships();
 				$results['term_taxonomy']      = $this->foregin_key_term_taxonomy();
 				$results['posts']              = $this->foregin_key_posts();
+			//	$results['posts']              = $this->foreign_key_post_parent();
 				$results['comments']           = $this->foreign_keys_comments();
+				$results['commentmeta']        = $this->foreign_key_commentmeta();
+			//	$results['comments_user']      = $this->foreign_keys_comments_user();
 
-				// var_dump( $results );
+			//	 var_dump( $results );
 
 				return $results;
 		}
@@ -157,22 +160,21 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		}
 
 		/**
-		 * [foreign_key_commentmeta description]
-		 *
-		 * @param  array $args Arguments.
-		 * @return $results Results of Query.
+		 * [foreign_key_post_parent description]
+		 * @param  array  $args [description]
+		 * @return [type]       [description]
 		 */
-		public function foreign_key_commentmeta( $args = array() ) {
+		public function foreign_key_post_parent( $args = array() ) {
 
 			global $wpdb;
 
 			$current_constraints = $this->get_current_constraints();
 
-			if( in_array( 'comment_id', $current_constraints ) ) {
-				return __( 'Comment ID constraint already exists.', 'foreign-keys-pro' );
+			if( in_array( 'post_parent', $current_constraints ) ) {
+				return __( 'Post Parent ID constraint already exists.', 'foreign-keys-pro' );
 			}
 
-			$query   = "ALTER TABLE $wpdb->commentmeta ADD CONSTRAINT `comment_id` FOREIGN KEY (`comment_id`) REFERENCES $wpdb->comments (`comment_ID`) ON DELETE CASCADE ON UPDATE CASCADE";
+			$query   = "ALTER TABLE $wpdb->posts ADD CONSTRAINT `parent_id` FOREIGN KEY (`post_parent`) REFERENCES $wpdb->posts (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
 
 			return $results;
@@ -292,6 +294,51 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 				$results = $wpdb->query( $query ) ?? false;
 
 				return $results;
+
+		}
+
+		/**
+		 * [foreign_keys_comments_user description]
+		 * @param  array  $args [description]
+		 * @return [type]       [description]
+		 */
+		public function foreign_keys_comments_user( $args = array() ) {
+
+				global $wpdb;
+
+				$current_constraints = $this->get_current_constraints();
+
+				if( in_array( 'comments_user_id', $current_constraints ) ) {
+					return __( 'Comments User ID constraint already exists.', 'foreign-keys-pro' );
+				}
+
+				$query   = "ALTER TABLE $wpdb->comments ADD CONSTRAINT `comments_user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
+				$results = $wpdb->query( $query ) ?? false;
+
+				return $results;
+
+		}
+
+		/**
+		 * [foreign_key_commentmeta description]
+		 *
+		 * @param  array $args Arguments.
+		 * @return $results Results of Query.
+		 */
+		public function foreign_key_commentmeta( $args = array() ) {
+
+			global $wpdb;
+
+			$current_constraints = $this->get_current_constraints();
+
+			if( in_array( 'comment_id', $current_constraints ) ) {
+				return __( 'Comment ID constraint already exists.', 'foreign-keys-pro' );
+			}
+
+			$query   = "ALTER TABLE $wpdb->commentmeta ADD CONSTRAINT `comment_id` FOREIGN KEY (`comment_id`) REFERENCES $wpdb->comments (`comment_ID`) ON DELETE CASCADE ON UPDATE CASCADE";
+			$results = $wpdb->query( $query ) ?? false;
+
+			return $results;
 
 		}
 
