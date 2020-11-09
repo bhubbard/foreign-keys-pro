@@ -30,11 +30,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 		 * [__construct description]
 		 */
 		public function __construct() {
-				add_action( 'wp_head', array( $this, 'create_foreign_keys' ) );
-					add_action( 'wp_head', array( $this, 'get_mysql_version' ) );
-
-
-				// register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
+				register_activation_hook( __FILE__, array( $this, 'create_foreign_keys' ) );
 		}
 
 
@@ -60,7 +56,7 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 				$results['posts']              = $this->foregin_key_posts();
 				$results['comments']           = $this->foreign_keys_comments();
 
-				var_dump( $results );
+				// var_dump( $results );
 
 				return $results;
 		}
@@ -129,10 +125,8 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 				return __( 'User ID constraint already exists.', 'foreign-keys-pro' );
 			}
 
-			$query   = "ALTER TABLE $wpdb->usermeta ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE 'CASCADE' ON UPDATE 'CASCADE'";
+			$query   = "ALTER TABLE $wpdb->usermeta ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES $wpdb->users (`ID`) ON DELETE CASCADE ON UPDATE CASCADE";
 			$results = $wpdb->query( $query ) ?? false;
-
-			write_log ( $results );
 
 			return $results;
 
@@ -305,16 +299,4 @@ if ( ! class_exists( 'ForeignKeysPro' ) ) {
 
 	new ForeignKeysPro();
 
-}
-
-
-
-if ( ! function_exists('write_log')) {
-   function write_log ( $log )  {
-      if ( is_array( $log ) || is_object( $log ) ) {
-         error_log( print_r( $log, true ) );
-      } else {
-         error_log( $log );
-      }
-   }
 }
